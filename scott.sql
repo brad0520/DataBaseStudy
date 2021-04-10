@@ -117,48 +117,101 @@ FROM EMP
 WHERE SAL BETWEEN 1200 AND 3500;
 
 #13. 직급이 매니저이고 부서번호가 30번인 사원의 이름,사번,직급,부서번호를 조회하시오. 
-
+SELECT ENAME AS "이름", EMPNO AS "사번", JOB AS "직급", DEPTNO AS "부서번호"
+FROM EMP
+WHERE JOB = 'MANAGER' AND DEPTNO = 30;
 
 #14. 부서번호가 30인 아닌 사원의 사번,이름,부서번호를 조회하시오. (not)
+SELECT EMPNO AS "사번", ENAME AS "이름", DEPTNO AS "부서번호"
+FROM EMP
+WHERE DEPTNO != 30;
 
+SELECT EMPNO AS "사번", ENAME AS "이름", DEPTNO AS "부서번호"
+FROM EMP
+WHERE NOT DEPTNO = 30;
 
 #15. 커미션이 300, 500, 1400 이 모두 아닌 사원의 사번,이름,커미션을 조회하시오. (hint : not in)
-
+SELECT EMPNO AS "사번", ENAME AS "이름", COMM AS "커미션"
+FROM EMP
+WHERE COMM NOT IN (300, 500, 1400);
 
 #16. 이름에 S가 포함되지 않는 사원의 사번,이름을 조회하시오. (hint : not like)
-
+SELECT ENAME AS "사원"
+FROM EMP
+WHERE ENAME NOT LIKE '%s%'; 
 
 #17. 급여가 1200보다 미만이거나 3700 초과하는 사원의 사번,이름,월급여를 조회하시오. (hint : not, between)
-
+SELECT EMPNO AS "사번", ENAME AS "이름", SAL AS "윕급여"
+FROM EMP
+WHERE SAL NOT BETWEEN 1200 AND 3500;
 
 #18. 직속상사가 NULL 인 사원의 이름과 직급을 조회하시오. (hint : is null, is not null)
+SELECT ENAME AS "이름", JOB AS "직급"
+FROM EMP
+WHERE MGR IS NULL;
 
+SELECT ENAME AS "이름", JOB AS "직급"
+FROM EMP
+WHERE MGR IS NOT NULL;
 
 #19. 부서별 평균월급여를 구하는 쿼리 (hint : group by, avg())
-
+SELECT DEPTNO AS "부서번호", AVG(SAL) AS "평균급여"
+FROM EMP
+GROUP BY DEPTNO;
 
 #20. 부서별 전체 사원수와 커미션을 받는 사원들의 수를 구하는 쿼리 (hint : group by, count())
-
+SELECT DEPTNO AS "부서번호", COUNT(*) AS "부서별 전체 사원수", COUNT(IF(COMM=0, NULL, comm)) AS "커미션"
+FROM EMP
+GROUP BY DEPTNO;
 
 #21. 부서별 최대 급여와 최소 급여를 구하는 쿼리 (hint : group by, min(), max())
-
+SELECT DEPTNO AS "부서번호", MAX(SAL) AS "최대 급여", MIN(SAL) AS "최소 급여"
+FROM EMP
+GROUP BY DEPTNO;
 
 #22. 부서별로 급여 평균 (단, 부서별 급여 평균이 2000 이상만) (hint : group by, having)
-
+SELECT DEPTNO AS "부서번호", AVG(SAL) AS "급여평균"
+FROM EMP
+GROUP BY DEPTNO
+HAVING AVG(SAL) >= 2000;
 
 #23. 월급여가 1000 이상인 사원만을 대상으로 부서별로 월급여 평균을 구하라. 단, 평균값이 2000 이상인 레코드만 구하라. (hint : group by, having)
+SELECT DEPTNO AS "부서번호", AVG(SAL) AS "급여평균"
+FROM EMP
+WHERE SAL >= 1000
+GROUP BY DEPTNO;
 
+SELECT DEPTNO AS "부서번호", AVG(SAL) AS "급여평균"
+FROM EMP
+WHERE SAL >= 1000
+GROUP BY DEPTNO
+HAVING AVG(SAL) >= 2000;
 
 #24. 사원명과 부서명을 조회하시오. (hint : inner join)
-
+SELECT e.ENAME AS "사원명", d.DNAME AS "부서명"
+FROM EMP e
+INNER JOIN DEPT d
+ON e.DEPTNO = d.DEPTNO; 
 
 #25. 이름,월급여,월급여등급을 조회하시오. (hint : inner join, between)
-
+SELECT e.ENAME AS "이름", e.SAL AS "월급여", s.GRADE AS "월급여등급"
+FROM EMP e
+INNER JOIN SALGRADE s
+ON e.SAL BETWEEN s.LOSAL AND s.HISAL;
 
 #26. 이름,부서명,월급여등급을 조회하시오. 
-
+SELECT e.ENAME AS "이름", d.DNAME AS "부서명", s.GRADE AS "월급여등급"
+FROM EMP e
+INNER JOIN SALGRADE s
+ON e.SAL BETWEEN s.LOSAL AND s.HISAL
+INNER JOIN DEPT d
+ON e.DEPTNO = d.DEPTNO;
 
 #27. 이름,직속상사이름을 조회하시오. (hint : self join
+SELECT e1.ENAME AS "이름", e2.ENAME AS "직속상사"
+FROM EMP e1
+INNER JOIN EMP e2
+ON e1.MGR = e2.EMPNO;
 
 #28. 이름,직속상사이름을 조회하시오.(단 직속 상사가 없는 사람도 직속상사 결과가 null값으로 나와야 함) (hint : outer join)
 ###외부OUTER 조인. A LEFT JOIN B는 조인 조건에 만족하지 못하더라도 왼쪽 테이블 A의 행을 나타내고 싶을 때 사용한다. 반대로 A RIGHT JOIN B는 조인 조건에 만족하지 못하더라도 오른쪽 테이블 B의 행을 나타내고 싶을 때
