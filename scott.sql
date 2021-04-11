@@ -215,4 +215,71 @@ ON e1.MGR = e2.EMPNO;
 
 #28. 이름,직속상사이름을 조회하시오.(단 직속 상사가 없는 사람도 직속상사 결과가 null값으로 나와야 함) (hint : outer join)
 ###외부OUTER 조인. A LEFT JOIN B는 조인 조건에 만족하지 못하더라도 왼쪽 테이블 A의 행을 나타내고 싶을 때 사용한다. 반대로 A RIGHT JOIN B는 조인 조건에 만족하지 못하더라도 오른쪽 테이블 B의 행을 나타내고 싶을 때
+SELECT e1.ENAME AS "이름", e2.ENAME AS "직속상사"
+FROM EMP e1
+LEFT JOIN EMP e2
+ON e1.MGR = e2.EMPNO;
+
+#29. 이름,부서명을 조회하시오.단, 사원테이블에 부서번호가 40에 속한 사원이 없지만 부서번호 40인 부서명도 출력되도록 하시오. (hint : outer join)
+SELECT e.ENAME AS "이름", d.DNAME AS "부서명", d.DEPTNO AS "부서번호"
+FROM EMP e
+RIGHT JOIN DEPT d
+ON e.DEPTNO = d.DEPTNO;
+
+#30. 부서번호가 30번인 사원들의 이름, 직급, 부서번호, 부서위치를 조회하시오. (hint : outer join)      질문!!!!!  d.LOC AS "부서위치"를 지웠을 때 에러 발생하는 이유....
+SELECT e.ENAME AS "이름", d.DNAME AS "부서명", d.DEPTNO AS "부서번호", d.LOC AS "부서위치"
+FROM EMP e
+RIGHT JOIN DEPT d
+ON e.DEPTNO = d.DEPTNO
+HAVING d.DEPTNO = 30;
+
+#31. DALLAS에서 근무하는 사원의 이름,직급,부서번호,부서명을 조회하시오.
+SELECT e.ENAME AS "이름", e.JOB AS "직급", d.DNAME AS "부서명", d.DEPTNO AS "부서번호", d.LOC AS "부서위치"
+FROM EMP e
+RIGHT JOIN DEPT d
+ON e.DEPTNO = d.DEPTNO
+HAVING d.LOC = 'DALLAS';
+
+#32. 이름에 A 가 들어가는 사원의 이름,부서명을 조회하시오.
+SELECT e.ENAME AS "사원명", d.DNAME AS "부서명"
+FROM EMP e
+INNER JOIN DEPT d
+ON e.DEPTNO = d.DEPTNO
+HAVING e.ENAME LIKE '%A%'; 
+
+#33. 이름, 직급, 월급여, 월급여등급을 조회하시오.
+SELECT e.ENAME AS "이름", e.JOB AS "직급", e.SAL AS "월급여", s.GRADE AS "월급여등급"
+FROM EMP e
+LEFT JOIN SALGRADE s
+ON e.SAL BETWEEN s.LOSAL AND s.HISAL;
+
+#34. ALLEN과 같은 부서에 근무하는 사원의 이름, 부서번호를 조회하시오.
+SELECT e1.DEPTNO 
+FROM emp e1 
+WHERE e1.ENAME = "ALLEN";
+
+SELECT e.ENAME AS "이름"
+FROM EMP e
+WHERE e.DEPTNO = 30;
+
+SELECT e.ENAME AS "이름", d.DNAME AS "부서명", d.DEPTNO AS "부서번호"
+FROM EMP e
+INNER JOIN DEPT d
+ON e.DEPTNO = d.DEPTNO AND e.DEPTNO = (SELECT e1.DEPTNO FROM emp e1 WHERE e1.ENAME = "ALLEN");
+
+#서브 쿼리는 SELECT 문 안에서 ()로 둘러싸인 SELECT 문을 말하며 쿼리문의 결과를 메인 쿼리로 전달하기 위해 사용된다.
+#사원명 'JONES'가 속한 부서명을 조회하시오.
+#부서번호를 알아내기 위한 쿼리가 서브 쿼리로 사용되고, 이 서브쿼리는 단 하나의 결과값을 얻기 때문에 단일 행 서브 쿼리라 한다.
+
+#35. 10번 부서에서 근무하는 사원의 이름과 10번 부서의 부서명을 조회하시오. (hint : sub query)
+SELECT e.ENAME AS "이름", (SELECT DNAME FROM DEPT WHERE deptno = 10) AS "부서명"
+FROM EMP e
+WHERE deptno = 10;
+
+#36. 평균 월급여보다 더 많은 월급여를 받은 사원의 사원번호,이름,월급여 조회하시오. (hint : sub query)
+SELECT e.ENAME AS "사원번호", e.ENAME AS "이름", e.ENAME AS "월급여"
+FROM EMP e
+WHERE deptno = 10;
+
+#37. 부서번호가 10인 사원중에서 최대급여를 받는 사원과 동일한 급여를 받는 사원의 사원번호, 이름을 조회하시오. (hint : sub query)
 
